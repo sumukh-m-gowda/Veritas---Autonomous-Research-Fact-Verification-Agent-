@@ -1,0 +1,43 @@
+veritas/
+├── .env.example
+├── requirements.txt
+├── README.md
+├── config.py                  # Step 1 — unchanged
+├── state.py                   # Step 2 — unchanged
+├── graph.py                   # "backend" — compiled StateGraph + helpers
+│                               #   (retrieve_all_threads, load_investigation, etc.)
+│                               #   grows every step, same file, matches your
+│                               #   langgraph_database_backend.py pattern
+├── streamlit_app.py           # "frontend" — imports from graph.py only,
+│                               #   sidebar = past investigations (via SQLite thread_ids),
+│                               #   main panel = claim input + live sub-question/verdict view
+├── main.py                    # CLI entrypoint — for quick testing without launching Streamlit
+├── agents/
+│   ├── __init__.py
+│   ├── planner.py              # Step 3
+│   ├── researcher.py           # Step 4 (+ Step 6 CRAG)
+│   ├── verifier.py             # Step 7
+│   └── synthesizer.py          # Step 8
+├── tools/
+│   ├── __init__.py
+│   └── search_tools.py         # Step 5
+├── rag/
+│   ├── __init__.py
+│   ├── ingest.py                # Step 4
+│   └── grader.py                 # Step 6
+├── memory/
+│   ├── __init__.py
+│   ├── short_term.py            # Step 10
+│   └── long_term.py             # Step 11
+├── db/
+│   ├── __init__.py
+│   ├── schema.sql               # Step 9
+│   └── storage.py                # Step 9
+├── mcp_server/
+│   └── server.py                # Step 13
+├── evals/
+│   ├── golden_dataset.json      # Step 14
+│   └── run_evals.py             # Step 14
+└── data/
+    ├── veritas.db                # SQLite — checkpoints + investigations
+    └── faiss_index/               # persisted vector stores

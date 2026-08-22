@@ -1,0 +1,25 @@
+claim (user input)
+   │
+   ▼
+[Planner node] → writes sub_questions (just the `question` field, everything else empty)
+   │
+   ▼
+[Researcher node] → for each sub_question, calls web_search/wikipedia/faiss tools,
+                     appends results to sub_questions[i].evidence
+   │
+   ▼
+[CRAG Grader node] → scores each Evidence.relevance_score;
+                      if scores are weak, loops back to Researcher for re-search
+   │
+   ▼
+[Sub-answer node] → fills sub_questions[i].answer and .confidence per sub-question
+   │
+   ▼
+[Verifier node] → compares answers across sub_questions, writes contradictions
+   │
+   ▼
+[Synthesizer node] → reads everything (sub_questions, contradictions) 
+                      → writes verdict, confidence_score, citations
+   │
+   ▼
+Final state returned
