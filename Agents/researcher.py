@@ -1,8 +1,9 @@
 # agents/researcher.py
 from __future__ import annotations
 
-from typing import List, TypedDict
+from typing import Annotated, List, TypedDict
 from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage, ToolMessage
+from langgraph.graph.message import add_messages
 
 from langchain_community.tools import DuckDuckGoSearchRun
 from langgraph.graph import END, START, StateGraph
@@ -22,6 +23,7 @@ class ResearchState(TypedDict):
 
     question: str
     evidence: List[Evidence]
+    messages: Annotated[list[BaseMessage], add_messages]
 
 RESEARCH_SYSTEM_PROMPT = """You are the research agent for Veritas. You are given ONE
 sub-question. Use the available tools to find evidence that answers it. Prefer
@@ -75,7 +77,7 @@ research_subgraph = research_graph.compile()
 
 def run_research_for_subquestion(payload: dict) -> dict:
     """Send() target - runs the subgraph for one sub-question, packages result for the parent graph."""
-    result = research_subgraph.invoke(payload)
+    result = research_subgraph.invoke({"question": payload["question"], "evidence": [], "messages": []})
     sub_question: SubQuestion = {
         "question": payload["question"],
         "evidence": result["evidence"],

@@ -90,6 +90,7 @@ def start_investigation(claim: str, thread_id: str) -> dict:
         "verdict": None,
         "confidence_score": None,
         "citations": [],
+        "research_results": [],
     }
     return veritas_graph.invoke(initial_state, config=run_config)
 
