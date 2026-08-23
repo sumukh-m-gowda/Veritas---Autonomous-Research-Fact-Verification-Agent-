@@ -4,5 +4,10 @@ langchain-community
 langchain-google-genai
 langchain-text-splitters
 langgraph
+langgraph-checkpoint-sqlite
 python-dotenv
 streamlit
+faiss-cpu
+ddgs
+wikipedia
+beautifulsoup4

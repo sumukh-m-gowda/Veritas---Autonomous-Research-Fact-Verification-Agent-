@@ -8,11 +8,11 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.types import Command, interrupt
 
 import config
-from Agents.planner import planner_node
+from agents.planner import planner_node
 from state import SubQuestion, VeritasState
 
 from langgraph.types import Send
-from Agents.researcher import run_research_for_subquestion
+from agents.researcher import run_research_for_subquestion
 
 
 def fan_out_to_research(state: VeritasState):
