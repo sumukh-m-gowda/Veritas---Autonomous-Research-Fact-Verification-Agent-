@@ -4,7 +4,7 @@ from typing import Annotated, List, Optional, TypedDict
 
 from langchain_core.messages import BaseMessage
 from langgraph.graph.message import add_messages
-
+import operator
 
 class Evidence(TypedDict):
     """A single piece of retrieved evidence for one sub-question."""
@@ -44,3 +44,4 @@ class VeritasState(TypedDict):
     verdict: Optional[str]
     confidence_score: Optional[float]
     citations: List[str]
+    research_results: Annotated[List[SubQuestion], operator.add]  
