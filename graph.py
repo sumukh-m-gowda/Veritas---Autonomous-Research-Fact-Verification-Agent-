@@ -11,7 +11,18 @@ import config
 from Agents.planner import planner_node
 from state import SubQuestion, VeritasState
 
+from langgraph.types import Send
+from Agents.researcher import run_research_for_subquestion
 
+
+def fan_out_to_research(state: VeritasState):
+    """Dispatch one research subgraph run per approved sub-question, in parallel."""
+    return [Send("research_subgraph", {"question": sq["question"], "evidence": []}) for sq in state["sub_questions"]]
+
+
+def merge_research_node(state: VeritasState) -> dict:
+    """Copy fanned-out research results into sub_questions once all parallel branches complete."""
+    return {"sub_questions": state["research_results"]}
 
 def human_review_plan_node(state: VeritasState) -> dict:
     """
@@ -49,11 +60,14 @@ checkpointer = SqliteSaver(conn=conn)
 graph = StateGraph(VeritasState)
 graph.add_node("planner", planner_node)
 graph.add_node("human_review_plan", human_review_plan_node)
+graph.add_node("research_subgraph", run_research_for_subquestion)
+graph.add_node("merge_research", merge_research_node)
 
 graph.add_edge(START, "planner")
 graph.add_edge("planner", "human_review_plan")
-graph.add_edge("human_review_plan", END) 
-
+graph.add_conditional_edges("human_review_plan", fan_out_to_research, ["research_subgraph"])
+graph.add_edge("research_subgraph", "merge_research")
+graph.add_edge("merge_research", END)
 veritas_graph = graph.compile(checkpointer=checkpointer)
 
 #hlpers
