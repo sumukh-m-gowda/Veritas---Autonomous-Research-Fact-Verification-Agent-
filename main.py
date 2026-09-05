@@ -21,6 +21,7 @@ def run_cli():
         "verdict": None,
         "confidence_score": None,
         "citations": [],
+        "research_results": [],
     }
     result = veritas_graph.invoke(initial_state, config=run_config)
 

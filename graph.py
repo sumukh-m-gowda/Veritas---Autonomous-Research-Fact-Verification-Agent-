@@ -16,17 +16,8 @@ from agents.researcher import run_research_for_subquestion
 
 
 def fan_out_to_research(state: VeritasState):
-    return [
-        Send(
-            "research_subgraph",
-            {
-                "question": sq["question"],
-                "evidence": [],
-                "messages": [],
-            }
-        )
-        for sq in state["sub_questions"]
-    ]
+    """Dispatch one research subgraph run per approved sub-question, in parallel."""
+    return [Send("research_subgraph", {"question": sq["question"], "evidence": [], "messages": []}) for sq in state["sub_questions"]]
 
 
 def merge_research_node(state: VeritasState) -> dict:
